@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.laporkampus.ui.SapaanPelapor
 import com.laporkampus.ui.TombolAksi
+import com.laporkampus.ui.LayarDaftar
 
 //@Composable
 //fun App() = MaterialTheme {
@@ -39,5 +40,6 @@ fun App() = MaterialTheme {
     ) {
         SapaanPelapor("Arsa Salsabila") // Uji pemanggilan SapaanPelapor
         TombolAksi() // Menampilkan 3 varian tombol di layar
+        LayarDaftar()
     }
 }
