@@ -10,3 +10,6 @@ fun StatusLaporan.label(): String = when (this) {
 
 // Extension function pada Laporan untuk membuat ringkasan singkat laporan
 fun Laporan.ringkas(): String = "#$id $judul, $lokasi"
+
+// Extension function untuk mengecek keberadaan foto secara aman tanpa operator !!
+fun Laporan.adaFoto(): Boolean = !fotoUrl.isNullOrBlank()
