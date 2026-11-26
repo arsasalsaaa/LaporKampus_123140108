@@ -10,21 +10,32 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.laporkampus.ui.SapaanPelapor
+
+//@Composable
+//fun App() = MaterialTheme {
+//    var tampil by remember { mutableStateOf(false) }
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .safeDrawingPadding(),
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Text("Halo, Arsa Salsabila")
+//        Text("NIM: 123140108")
+//        Button(onClick = { tampil = !tampil }) {
+//            Text("Cek platform")
+//        }
+//        AnimatedVisibility(tampil) { Text(sapaan()) }
+//    }
+//}
 
 @Composable
 fun App() = MaterialTheme {
-    var tampil by remember { mutableStateOf(false) }
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding(),
+        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Halo, Arsa Salsabila")
-        Text("NIM: 123140108")
-        Button(onClick = { tampil = !tampil }) {
-            Text("Cek platform")
-        }
-        AnimatedVisibility(tampil) { Text(sapaan()) }
+        SapaanPelapor("Arsa Salsabila") // Uji pemanggilan SapaanPelapor
     }
 }
