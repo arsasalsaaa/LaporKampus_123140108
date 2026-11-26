@@ -10,4 +10,7 @@ sealed class StatusLaporan {
 
     // Data class digunakan untuk status yang membawa data tambahan (catatan penyelesaian)
     data class Selesai(val catatan: String) : StatusLaporan()
+
+    // Status laporan ditolak beserta alasannya
+    data class Ditolak(val alasan: String) : StatusLaporan()
 }
