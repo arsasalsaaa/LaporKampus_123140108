@@ -6,6 +6,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
@@ -32,3 +33,6 @@ fun FormLaporanState() {
 // 2. Tanpa remember (var judul by mutableStateOf(""))
 // Kolom input tetap kosong dan hitungan karakter macet di angka 0 meskipun tombol sudah ditekan. Layar memang terus diperbarui
 // setiap kali mengetik, tetapi karena tidak ada remember yang menyimpan data, teksnya selalu ter-reset kembali menjadi kosong.
+
+// • remember: Bertahan saat terjadi recomposition biasa, tetapi nilainya akan hilang atau direset saat layar dirotasi (karena Activity Android dihancurkan & dibuat ulang).
+// • rememberSaveable: Bertahan saat recomposition DAN bertahan saat layar dirotasi (karena otomatis menyimpan state ke Bundle sistem Android).
