@@ -16,6 +16,7 @@ import com.laporkampus.ui.DaftarLaporan // Mengimpor composable DaftarLaporan de
 import com.laporkampus.ui.SapaanPelapor // Mengimpor composable SapaanPelapor
 import com.laporkampus.ui.TombolAksi // Mengimpor composable TombolAksi
 import com.laporkampus.ui.FormLaporanBiasa // Mengimpor composable FormLaporanBiasa()
+import com.laporkampus.ui.FormLaporanState
 
 //@Composable
 //fun App() = MaterialTheme {
@@ -63,7 +64,8 @@ fun App() = MaterialTheme { // Pembungkus utama tema aplikasi Material 3
             lokasi = "Gedung Kuliah Umum (GKU) 1 R201",
             waktu = "10 menit lalu"
         )
-        FormLaporanBiasa()
+        // FormLaporanBiasa()
+        FormLaporanState() // Form laporan pakai remember & mutableStateOf
         // 4. Menampilkan daftar laporan panjang menggunakan LazyColumn (Soal Bagian 3.2 & 3.3)
         DaftarLaporan(
             semua = contohLaporanList, // Mengirimkan sampel daftar laporan
