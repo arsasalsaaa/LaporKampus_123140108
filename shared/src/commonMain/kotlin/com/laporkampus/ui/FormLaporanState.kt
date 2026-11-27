@@ -36,3 +36,8 @@ fun FormLaporanState() {
 
 // • remember: Bertahan saat terjadi recomposition biasa, tetapi nilainya akan hilang atau direset saat layar dirotasi (karena Activity Android dihancurkan & dibuat ulang).
 // • rememberSaveable: Bertahan saat recomposition DAN bertahan saat layar dirotasi (karena otomatis menyimpan state ke Bundle sistem Android).
+
+// contoh gaya penulisan state:
+// 1. var judul by remember { mutableStateOf("") }
+// 2. val judul = remember { mutableStateOf("") }
+// 3. val (judul, setJudul) = remember { mutableStateOf("") }
