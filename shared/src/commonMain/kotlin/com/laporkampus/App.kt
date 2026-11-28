@@ -46,6 +46,8 @@ import com.laporkampus.nav.RuteProfil
 import com.laporkampus.ui.DetailViewModel
 import com.laporkampus.ui.LayarDetail
 
+import com.laporkampus.ui.MenuBawahPolos
+
 // Contoh data awal laporan untuk diisikan ke PenyimpananLaporan
 val contohLaporanList = listOf(
     Laporan(1, "Proyektor mati", "GKU 1 R201", null, StatusLaporan.Baru),
@@ -56,22 +58,22 @@ val contohLaporanList = listOf(
     Laporan(6, "Wi-Fi tidak terhubung", "Gedung Student Center", null, StatusLaporan.Baru),
     Laporan(7, "Air toilet mampet", "Gedung Dekanat Lt. 1", null, StatusLaporan.Selesai("Pipa dibersihkan"))
 )
-
 @Composable
 fun App() = MaterialTheme {
-    // Controller sebagai pengemudi navigasi
     val nav = rememberNavController()
 
-    Scaffold { innerPadding ->
-        // NavHost menggantikan pernyataan when manual sebagai peta alamat rute navigasi 5 rute
+    Scaffold(
+        bottomBar = {
+            MenuBawahPolos(nav) // Pakai navigate polos dulu untuk Nomor 2
+        }
+    ) { innerPadding ->
         NavHost(
             navController = nav,
-            startDestination = RuteBeranda, // Destinasi awal layar
+            startDestination = RuteBeranda,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Rute 1: Layar Beranda (Sapaan + Tombol Navigasi + Daftar Laporan)
             composable<RuteBeranda> {
                 val daftar by PenyimpananLaporan.daftar.collectAsState()
 
@@ -83,86 +85,156 @@ fun App() = MaterialTheme {
                 ) {
                     SapaanPelapor(nama = "Arsa Salsabila")
 
-                    // Baris tombol navigasi ke RuteForm, RuteAsisten, dan RuteProfil
-                    Row(
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    Button(
+                        onClick = { nav.navigate(RuteForm) },
+                        modifier = Modifier.padding(vertical = 8.dp)
                     ) {
-                        Button(onClick = { nav.navigate(RuteForm) }) {
-                            Text("Form Lapor")
-                        }
-                        Button(onClick = { nav.navigate(RuteAsisten) }) {
-                            Text("Asisten AI")
-                        }
-                        Button(onClick = { nav.navigate(RuteProfil) }) {
-                            Text("Profil")
-                        }
+                        Text("Tambah Laporan Baru")
                     }
 
                     DaftarLaporan(
                         semua = daftar,
                         onPilih = { laporan ->
-                            nav.navigate(RuteDetail(laporan.id)) // Navigasi ke RuteDetail membawa ID
+                            nav.navigate(RuteDetail(laporan.id))
                         }
                     )
                 }
             }
 
-            // Rute 2: Layar Detail Laporan
+            composable<RuteAsisten> {
+                Text("Halaman Asisten Kampus", modifier = Modifier.padding(16.dp))
+            }
+
+            composable<RuteProfil> {
+                Text("Halaman Profil: Arsa Salsabila", modifier = Modifier.padding(16.dp))
+            }
+
             composable<RuteDetail> { entry ->
-                val rute: RuteDetail = entry.toRoute() // Mengambil parameter argument ID dari rute
+                val rute: RuteDetail = entry.toRoute()
                 val vm = viewModel(key = "detail_${rute.id}") { DetailViewModel(rute.id) }
                 val state by vm.uiState.collectAsState()
 
                 LayarDetail(
                     state = state,
-                    kembali = { nav.popBackStack() } // Kembali ke layar sebelumnya
+                    kembali = { nav.popBackStack() }
                 )
             }
 
-            // Rute 3: Layar Form Laporan
             composable<RuteForm> {
                 FormLaporanScreen(
-                    selesai = { nav.popBackStack() } // Pop back stack setelah laporan terkirim
+                    selesai = { nav.popBackStack() }
                 )
-            }
-
-            // Rute 4: Layar Asisten AI Gemini
-            composable<RuteAsisten> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    TextButton(onClick = { nav.popBackStack() }) {
-                        Text("← Kembali")
-                    }
-                    Text("Asisten AI Gemini", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                    Text("Layar Asisten AI untuk membantu pelaporan kampus.")
-                }
-            }
-
-            // Rute 5: Layar Profil Pelapor
-            composable<RuteProfil> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    TextButton(onClick = { nav.popBackStack() }) {
-                        Text("← Kembali")
-                    }
-                    Text("Profil Pelapor", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                    Text("Nama: Arsa Salsabila")
-                    Text("NIM: 123140108")
-                    Text("Role: Mahasiswa / Pelapor Utama")
-                }
             }
         }
     }
 }
+
+//@Composable
+//fun App() = MaterialTheme {
+//    // Controller sebagai pengemudi navigasi
+//    val nav = rememberNavController()
+//
+//    Scaffold { innerPadding ->
+//        // NavHost menggantikan pernyataan when manual sebagai peta alamat rute navigasi 5 rute
+//        NavHost(
+//            navController = nav,
+//            startDestination = RuteBeranda, // Destinasi awal layar
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(innerPadding)
+//        ) {
+//            // Rute 1: Layar Beranda (Sapaan + Tombol Navigasi + Daftar Laporan)
+//            composable<RuteBeranda> {
+//                val daftar by PenyimpananLaporan.daftar.collectAsState()
+//
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(horizontal = 16.dp),
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    SapaanPelapor(nama = "Arsa Salsabila")
+//
+//                    // Baris tombol navigasi ke RuteForm, RuteAsisten, dan RuteProfil
+//                    Row(
+//                        modifier = Modifier.padding(vertical = 8.dp),
+//                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+//                    ) {
+//                        Button(onClick = { nav.navigate(RuteForm) }) {
+//                            Text("Form Lapor")
+//                        }
+//                        Button(onClick = { nav.navigate(RuteAsisten) }) {
+//                            Text("Asisten AI")
+//                        }
+//                        Button(onClick = { nav.navigate(RuteProfil) }) {
+//                            Text("Profil")
+//                        }
+//                    }
+//
+//                    DaftarLaporan(
+//                        semua = daftar,
+//                        onPilih = { laporan ->
+//                            nav.navigate(RuteDetail(laporan.id)) // Navigasi ke RuteDetail membawa ID
+//                        }
+//                    )
+//                }
+//            }
+//
+//            // Rute 2: Layar Detail Laporan
+//            composable<RuteDetail> { entry ->
+//                val rute: RuteDetail = entry.toRoute() // Mengambil parameter argument ID dari rute
+//                val vm = viewModel(key = "detail_${rute.id}") { DetailViewModel(rute.id) }
+//                val state by vm.uiState.collectAsState()
+//
+//                LayarDetail(
+//                    state = state,
+//                    kembali = { nav.popBackStack() } // Kembali ke layar sebelumnya
+//                )
+//            }
+//
+//            // Rute 3: Layar Form Laporan
+//            composable<RuteForm> {
+//                FormLaporanScreen(
+//                    selesai = { nav.popBackStack() } // Pop back stack setelah laporan terkirim
+//                )
+//            }
+//
+//            // Rute 4: Layar Asisten AI Gemini
+//            composable<RuteAsisten> {
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(16.dp),
+//                    verticalArrangement = Arrangement.spacedBy(12.dp)
+//                ) {
+//                    TextButton(onClick = { nav.popBackStack() }) {
+//                        Text("← Kembali")
+//                    }
+//                    Text("Asisten AI Gemini", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+//                    Text("Layar Asisten AI untuk membantu pelaporan kampus.")
+//                }
+//            }
+//
+//            // Rute 5: Layar Profil Pelapor
+//            composable<RuteProfil> {
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(16.dp),
+//                    verticalArrangement = Arrangement.spacedBy(12.dp)
+//                ) {
+//                    TextButton(onClick = { nav.popBackStack() }) {
+//                        Text("← Kembali")
+//                    }
+//                    Text("Profil Pelapor", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+//                    Text("Nama: Arsa Salsabila")
+//                    Text("NIM: 123140108")
+//                    Text("Role: Mahasiswa")
+//                }
+//            }
+//        }
+//    }
+//}
 
 //@Composable
 //fun App() = MaterialTheme {
