@@ -92,7 +92,10 @@ fun App() = MaterialTheme {
                     ) {
                         Text("Tambah Laporan Baru")
                     }
-
+                    // Uji ID 999
+                    Button(onClick = { nav.navigate(RuteDetail(999)) }) {
+                        Text("Uji ID 999")
+                    }
                     DaftarLaporan(
                         semua = daftar,
                         onPilih = { laporan ->
