@@ -2,8 +2,11 @@ package com.laporkampus.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -12,12 +15,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.laporkampus.model.StatusLaporan
 import com.laporkampus.model.label
 
 @Composable
 fun LayarDetail(
     state: DetailUiState,
-    kembali: () -> Unit
+    kembali: () -> Unit,
+    onUbahStatus: (StatusLaporan) -> Unit = {}
 ) {
     Column(
         modifier = Modifier.padding(16.dp),
@@ -41,6 +46,15 @@ fun LayarDetail(
                 Text(laporan.lokasi, color = Color.Gray)
                 LabelStatus(laporan.status)
                 Text("Detail Status: ${laporan.status.label()}")
+
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(onClick = { onUbahStatus(StatusLaporan.Diproses("Pak Joko")) }) {
+                        Text("Proses")
+                    }
+                    Button(onClick = { onUbahStatus(StatusLaporan.Selesai("Sudah diperbaiki")) }) {
+                        Text("Selesai")
+                    }
+                }
             }
         }
     }

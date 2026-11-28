@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import com.laporkampus.model.StatusLaporan
 
 // Sealed class merepresentasikan 3 keadaan layar detail
 sealed class DetailUiState {
@@ -17,7 +18,7 @@ sealed class DetailUiState {
 }
 
 // ViewModel menerima id laporan dan mencari datanya sendiri dari PenyimpananLaporan
-class DetailViewModel(id: Int) : ViewModel() {
+class DetailViewModel(private val id: Int) : ViewModel() {
     val uiState: StateFlow<DetailUiState> = PenyimpananLaporan.daftar
         .map { semua ->
             val laporan = semua.find { it.id == id }
@@ -29,4 +30,7 @@ class DetailViewModel(id: Int) : ViewModel() {
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = DetailUiState.Memuat
         )
+    fun ubahStatus(statusBaru: StatusLaporan) {
+        PenyimpananLaporan.ubahStatus(id, statusBaru)
+    }
 }

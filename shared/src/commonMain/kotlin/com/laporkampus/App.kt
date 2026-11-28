@@ -128,7 +128,8 @@ fun App() = MaterialTheme {
 
                 LayarDetail(
                     state = state,
-                    kembali = { nav.popBackStack() }
+                    kembali = { nav.popBackStack() },
+                    onUbahStatus = vm::ubahStatus
                 )
             }
 
