@@ -45,8 +45,7 @@ import com.laporkampus.nav.RuteForm
 import com.laporkampus.nav.RuteProfil
 import com.laporkampus.ui.DetailViewModel
 import com.laporkampus.ui.LayarDetail
-
-import com.laporkampus.ui.MenuBawahPolos
+import com.laporkampus.ui.MenuBawahRapi
 
 // Contoh data awal laporan untuk diisikan ke PenyimpananLaporan
 val contohLaporanList = listOf(
@@ -64,7 +63,7 @@ fun App() = MaterialTheme {
 
     Scaffold(
         bottomBar = {
-            MenuBawahPolos(nav) // Pakai navigate polos dulu untuk Nomor 2
+            MenuBawahRapi(nav) // Ganti dari MenuBawahPolos(nav) ke MenuBawahRapi(nav)
         }
     ) { innerPadding ->
         NavHost(
@@ -287,3 +286,13 @@ fun App() = MaterialTheme {
 //        )
 //    }
 //}
+
+// Versi 1:
+// MenuBawah yang memanggil nav.navigate(rute) secara langsung tanpa pengaturan popUpTo maupun launchSingleTop, setiap kali tab di menu bawah ditekan, tujuan baru terus ditumpuk ke bagian atas back
+// stack meskipun halaman tersebut sudah pernah dibuka sebelumnya. Akibatnya, saat dilakukan 4 kali perpindahan tab (Asisten - Profil - Beranda - Asisten), dibutuhkan 5 kali menekan tombol Kembali
+// sistem untuk membongkar seluruh riwayat tumpukan tab satu per satu hingga akhirnya keluar dari aplikasi.
+// Versi 2:
+// Setelah mengganti nav.navigate(rute) polos menjadi fungsi ekstensi nav.pindahTab(rute) yang menerapkan popUpTo ke destinasi awal (RuteBeranda), launchSingleTop = true, dan restoreState = true,
+// perilaku tumpukan back stack menjadi jauh lebih rapi. Dengan urutan perpindahan tab yang sama persis sebanyak 4 kali (Asisten $\rightarrow$ Profil $\rightarrow$ Beranda $\rightarrow$ Asisten),
+// jumlah tekanan tombol Kembali sistem untuk keluar dari aplikasi berkurang dari 5 kali (pada navigate polos) menjadi hanya 2 kali (dari tab Asisten langsung kembali ke Beranda, lalu keluar aplikasi),
+// karena setiap perpindahan tab membersihkan tumpukan tab perantara dan mencegah duplikasi layar yang sama di back stack.
