@@ -51,7 +51,10 @@ val contohLaporanList = listOf(
     Laporan(1, "Proyektor mati", "GKU 1 R201", null, StatusLaporan.Baru),
     Laporan(2, "AC bocor", "Lab Komputer 2", null, StatusLaporan.Diproses("Pak Joko")),
     Laporan(3, "Lampu tidak menyala", "GKU 2 R103", null, StatusLaporan.Ditolak("Bukan fasilitas umum")),
-    Laporan(4, "Pintu rusak", "Perpustakaan Lt. 2", null, StatusLaporan.Selesai("Engsel diganti"))
+    Laporan(4, "Pintu rusak", "Perpustakaan Lt. 2", null, StatusLaporan.Selesai("Engsel diganti")),
+    Laporan(5, "Kursi patah", "GKU 2 R123", null, StatusLaporan.Diproses("Pak Budi")),
+    Laporan(6, "Wi-Fi tidak terhubung", "Gedung Student Center", null, StatusLaporan.Baru),
+    Laporan(7, "Air toilet mampet", "Gedung Dekanat Lt. 1", null, StatusLaporan.Selesai("Pipa dibersihkan"))
 )
 
 @Composable
