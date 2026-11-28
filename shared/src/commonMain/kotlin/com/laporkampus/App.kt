@@ -33,11 +33,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.saveable.rememberSaveable
 import com.laporkampus.nav.RuteAsisten
 import com.laporkampus.nav.RuteBeranda
 import com.laporkampus.nav.RuteDetail
@@ -101,7 +103,15 @@ fun App() = MaterialTheme {
             }
 
             composable<RuteAsisten> {
-                Text("Halaman Asisten Kampus", modifier = Modifier.padding(16.dp))
+                var catatan by rememberSaveable { mutableStateOf("") } // Pakai rememberSaveable
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Halaman Asisten Kampus")
+                    OutlinedTextField(
+                        value = catatan,
+                        onValueChange = { catatan = it },
+                        label = { Text("Tulis catatan") }
+                    )
+                }
             }
 
             composable<RuteProfil> {
