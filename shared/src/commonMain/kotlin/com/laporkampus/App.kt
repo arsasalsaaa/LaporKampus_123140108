@@ -27,6 +27,24 @@ import com.laporkampus.ui.FormLaporanState
 import com.laporkampus.ui.FormLaporan
 import com.laporkampus.ui.FormLaporanScreen
 import com.laporkampus.data.PenyimpananLaporan
+import androidx.compose.material3.Scaffold
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.laporkampus.nav.RuteAsisten
+import com.laporkampus.nav.RuteBeranda
+import com.laporkampus.nav.RuteDetail
+import com.laporkampus.nav.RuteForm
+import com.laporkampus.nav.RuteProfil
+import com.laporkampus.ui.DetailViewModel
+import com.laporkampus.ui.LayarDetail
 
 // Contoh data awal laporan untuk diisikan ke PenyimpananLaporan
 val contohLaporanList = listOf(
@@ -38,39 +56,107 @@ val contohLaporanList = listOf(
 
 @Composable
 fun App() = MaterialTheme {
-    // State perpindahan layar antara Daftar (false) dan Form (true)
-    var diForm by remember { mutableStateOf(false) }
-    // Mengamati daftar laporan terbaru dari PenyimpananLaporan
-    val daftar by PenyimpananLaporan.daftar.collectAsState()
+    // Controller sebagai pengemudi navigasi
+    val nav = rememberNavController()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding()
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        SapaanPelapor(nama = "Arsa Salsabila")
-
-        // Tombol toggle navigasi antara Form Lapor dan Daftar Laporan
-        Button(
-            onClick = { diForm = !diForm },
-            modifier = Modifier.padding(vertical = 8.dp)
+    Scaffold { innerPadding ->
+        // NavHost menggantikan pernyataan when manual sebagai peta alamat rute navigasi 5 rute
+        NavHost(
+            navController = nav,
+            startDestination = RuteBeranda, // Destinasi awal layar
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
-            Text(if (diForm) "Lihat Daftar Laporan" else "Tambah Laporan Baru")
-        }
+            // Rute 1: Layar Beranda (Sapaan + Tombol Navigasi + Daftar Laporan)
+            composable<RuteBeranda> {
+                val daftar by PenyimpananLaporan.daftar.collectAsState()
 
-        if (diForm) {
-            // Menampilkan layar form berbasis ViewModel (Bagian 3)
-            FormLaporanScreen()
-        } else {
-            // Menampilkan daftar yang otomatis ter-update saat laporan baru dikirim
-            DaftarLaporan(
-                semua = daftar,
-                onPilih = { laporan ->
-                    println("Laporan terpilih: ${laporan.judul}")
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    SapaanPelapor(nama = "Arsa Salsabila")
+
+                    // Baris tombol navigasi ke RuteForm, RuteAsisten, dan RuteProfil
+                    Row(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Button(onClick = { nav.navigate(RuteForm) }) {
+                            Text("Form Lapor")
+                        }
+                        Button(onClick = { nav.navigate(RuteAsisten) }) {
+                            Text("Asisten AI")
+                        }
+                        Button(onClick = { nav.navigate(RuteProfil) }) {
+                            Text("Profil")
+                        }
+                    }
+
+                    DaftarLaporan(
+                        semua = daftar,
+                        onPilih = { laporan ->
+                            nav.navigate(RuteDetail(laporan.id)) // Navigasi ke RuteDetail membawa ID
+                        }
+                    )
                 }
-            )
+            }
+
+            // Rute 2: Layar Detail Laporan
+            composable<RuteDetail> { entry ->
+                val rute: RuteDetail = entry.toRoute() // Mengambil parameter argument ID dari rute
+                val vm = viewModel(key = "detail_${rute.id}") { DetailViewModel(rute.id) }
+                val state by vm.uiState.collectAsState()
+
+                LayarDetail(
+                    state = state,
+                    kembali = { nav.popBackStack() } // Kembali ke layar sebelumnya
+                )
+            }
+
+            // Rute 3: Layar Form Laporan
+            composable<RuteForm> {
+                FormLaporanScreen(
+                    selesai = { nav.popBackStack() } // Pop back stack setelah laporan terkirim
+                )
+            }
+
+            // Rute 4: Layar Asisten AI Gemini
+            composable<RuteAsisten> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    TextButton(onClick = { nav.popBackStack() }) {
+                        Text("← Kembali")
+                    }
+                    Text("Asisten AI Gemini", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                    Text("Layar Asisten AI untuk membantu pelaporan kampus.")
+                }
+            }
+
+            // Rute 5: Layar Profil Pelapor
+            composable<RuteProfil> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    TextButton(onClick = { nav.popBackStack() }) {
+                        Text("← Kembali")
+                    }
+                    Text("Profil Pelapor", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                    Text("Nama: Arsa Salsabila")
+                    Text("NIM: 123140108")
+                    Text("Role: Mahasiswa / Pelapor Utama")
+                }
+            }
         }
     }
 }
